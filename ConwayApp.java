@@ -5,19 +5,16 @@ package Conway;
  * Aug 2019
  */
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import Conway.Constant;
 
 public class ConwayApp{
     
     public static void main(String[] args){
         JFrame frame = new JFrame("Conway");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
-        GamePanel panel = new GamePanel();
-        frame.getContentPane().add(panel);
+        frame.setResizable(false);
+        frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+        frame.getContentPane().add(new GamePanel());
         frame.pack();
         frame.setVisible(true);
     }

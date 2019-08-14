@@ -6,8 +6,6 @@ package Conway;
  */
 
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 import Conway.Constant;
 
 public class Cell{
@@ -25,6 +23,37 @@ public class Cell{
         this.yCoord = yCoord;
         active = false;
         size = Constant.CELL_SIZE;
+    }
+    
+    /**
+     * Gets the x position of this cell in array
+     * @return the x coordinate of the cell
+     */
+    public int getX(){
+        return this.xCoord;
+    }
+    
+    /**
+     * Gets the y position of this cell in array
+     * @return the y coordinate of the cell
+     */
+    public int getY(){
+        return this.yCoord;
+    }
+    
+    /**
+     * Get the activity state of the cell
+     */
+    public boolean getActive(){
+        return this.active;
+    }
+    
+    /**
+     * Set the active state of this cell
+     * @param state the state to set this cell to
+     */
+    public void setActive(boolean state){
+        this.active=state;
     }
     
     /**
