@@ -16,7 +16,7 @@ public final class Constant{
     public static final int CELL_PANEL_WIDTH = 500;
     
     //Set the dimensions of the control panel
-    public static final int CONTROL_PANEL_HEIGHT = 50;
+    public static final int CONTROL_PANEL_HEIGHT = 100;
     public static final int CONTROL_PANEL_WIDTH = CELL_PANEL_WIDTH;
     
     //The size of the cells, length and width of the squares
@@ -28,4 +28,7 @@ public final class Constant{
     
     //Define the tick time of the game timer
     public static final int TICK_SPEED = 100; //milliseconds
+    
+    //Define the folder that all saves and loads will be stored/loaded
+    public static final String SAVE_FOLDER = "Saves";
 }
