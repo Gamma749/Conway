@@ -8,8 +8,6 @@ package Conway;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.io.File;
-import java.io.FileWriter;
 import Conway.Constant;
 
 public class MainControlTab extends JPanel{

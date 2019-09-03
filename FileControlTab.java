@@ -11,11 +11,11 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileWriter;
 import Conway.Constant;
+import java.util.Date;
 
 public class FileControlTab extends JPanel{
     private JButton[] buttonArray = {new JButton("Save"), new JButton("Load")};
-    private JLabel saveLabel;
-    private JTextField saveNameTextEntry;
+    private JTextArea fileLabel;
     
     public FileControlTab(){
         //Set the dimensions of the panel
@@ -27,14 +27,16 @@ public class FileControlTab extends JPanel{
         
         //_____________________________________________________________
         //Set up the panel
-        saveLabel = new JLabel("Save Name:");
-        this.add(saveLabel);
-        saveNameTextEntry = new JTextField(10);
-        this.add(saveNameTextEntry);
         for(JButton button:buttonArray){//Iterate through all buttons
             this.add(button);
             button.addActionListener(buttonListener);
         }
+        //Initalise the fileLabel, which will update the user about save/load success
+        fileLabel = new JTextArea(2,40);
+        fileLabel.setEditable(false); //stop the user editing the field
+        fileLabel.setBackground(new Color(220,220,255)); //set background
+        fileLabel.setMargin(new Insets(10,10,10,10)); //Set the margins
+        this.add(fileLabel);
     }
     
     public void paintComponent(Graphics g){
@@ -52,17 +54,15 @@ public class FileControlTab extends JPanel{
     }
     
     /**
-     * Saves the current state of the board to a file in the save directory, with a name determined by the textfield
+     * Saves the current state of the board to a file in the save directory
      * @return the boolean of success, true only if the file is saved correctly
      */
     private boolean saveState(){
         //Ensure the selected name is valid
-        if(saveNameTextEntry.getText()=="" || saveNameTextEntry.getText().indexOf('.')!=-1){
-            return false; //if the text field is empty, or contains a . , don't save anything
-        }
         try{ //Catch any IOExceptions
-            File file = new File(Constant.SAVE_FOLDER, saveNameTextEntry.getText()+".txt"); //Create the file object
-            file.mkdir(); //Create the folver, incase it hasn't been made
+            File saveDirectory = new File(Constant.SAVE_DIRECTORY);
+            File file = new File(saveDirectory, generateFileName()+".conway"); //Create the file object
+            saveDirectory.mkdirs(); //Create the save folder, incase it hasn't been made
             file.createNewFile(); //Create the file to save to
             FileWriter writer = new FileWriter(file); //Create a new file writer that wil write the state of the board
             
@@ -72,11 +72,27 @@ public class FileControlTab extends JPanel{
                 }
                 writer.write('\n'); //write a \n between lines
             }
+            writer.close(); //close the scanner
+            fileLabel.setText("File Saved Successfully:\n" + file); //Tell the use the file has been saved
         } catch (java.io.IOException e){
+            //In an error, update the GUI and print error to stderr
             System.err.println(e);
+            fileLabel.setText("ERROR: File not saved successfully");
             return false; //If an error is encountered, exit the method gracefully
         }
+        
         return true; //Method has sucesfully terminated
+    }
+    
+    /**
+     * Generates the file name that the current board state will be saved under
+     * @return the string representing the name of the file
+     */
+    private String generateFileName(){
+        String fileName = new Date().toString(); //use the time stamp as the basis of the file name
+        //replace colons with hyphens
+        fileName = fileName.replace(':', '-');
+        return fileName;
     }
     
 }

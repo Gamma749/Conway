@@ -23,7 +23,7 @@ public class GamePanel extends JPanel{
      */
     public GamePanel(){
         //Set the size and background of the game panel
-        setPreferredSize(new Dimension(Constant.CELL_PANEL_WIDTH, Constant.CELL_PANEL_HEIGHT+Constant.CONTROL_PANEL_HEIGHT));
+        setPreferredSize(new Dimension(Math.max(Constant.CELL_PANEL_WIDTH, Constant.CONTROL_PANEL_WIDTH), Constant.CELL_PANEL_HEIGHT+Constant.CONTROL_PANEL_HEIGHT));
         setBackground(new Color(180,180,200));
         
         //Define the timer
