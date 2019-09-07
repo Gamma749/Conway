@@ -8,10 +8,13 @@ package Conway;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileWriter;
 import Conway.Constant;
 import java.util.Date;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
 public class FileControlTab extends JPanel{
     private JButton[] buttonArray = {new JButton("Save"), new JButton("Load")};
@@ -41,6 +44,7 @@ public class FileControlTab extends JPanel{
     
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        GamePanel.cellPanel.repaint();
     }
     
     private class ButtonListener implements ActionListener{
@@ -48,6 +52,8 @@ public class FileControlTab extends JPanel{
             JButton buttonPressed = (JButton)event.getSource(); //All events must be buttons
             if(buttonPressed.getText() == "Save"){
                 saveState();
+            } else if(buttonPressed.getText() == "Load"){
+                loadState();  
             }
             repaint();
         }
@@ -57,7 +63,7 @@ public class FileControlTab extends JPanel{
      * Saves the current state of the board to a file in the save directory
      * @return the boolean of success, true only if the file is saved correctly
      */
-    private boolean saveState(){
+    private void saveState(){
         //Ensure the selected name is valid
         try{ //Catch any IOExceptions
             File saveDirectory = new File(Constant.SAVE_DIRECTORY);
@@ -78,10 +84,7 @@ public class FileControlTab extends JPanel{
             //In an error, update the GUI and print error to stderr
             System.err.println(e);
             fileLabel.setText("ERROR: File not saved successfully");
-            return false; //If an error is encountered, exit the method gracefully
         }
-        
-        return true; //Method has sucesfully terminated
     }
     
     /**
@@ -93,6 +96,108 @@ public class FileControlTab extends JPanel{
         //replace colons with hyphens
         fileName = fileName.replace(':', '-');
         return fileName;
+    }
+    
+    /**
+     * Loads the state of the board from a file
+     * @return the boolean of success, true if state is loaded
+     */
+    private void loadState(){
+        File saveDirectory = new File(Constant.SAVE_DIRECTORY); //define where the saves are located
+        saveDirectory.mkdirs(); //Create the save folder, incase it hasn't been made
+        JFileChooser fileChooser = new JFileChooser(saveDirectory); //Set the file chooser to open at the saves directory
+        fileChooser.setMultiSelectionEnabled(false); //enable only one file to be selected
+        FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("Conway Files", "conway"); //ensure user only selected conway files
+        fileChooser.addChoosableFileFilter(fileFilter); //add the filter
+        fileChooser.setFileFilter(fileFilter); //set conway to default filter
+        fileChooser.setAcceptAllFileFilterUsed(false); //stop user using "all files" filter
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); //only allow the user to select files
+        
+        int returnValue = fileChooser.showOpenDialog(null); //open the file choosers
+        if (returnValue == JFileChooser.APPROVE_OPTION) { //user has selected a file
+            File selectedFile = fileChooser.getSelectedFile();
+            Boolean loadSuccess = scanFile(selectedFile); //Loads data from selectedFile and update cell array
+        } else if(returnValue == JFileChooser.CANCEL_OPTION){ //user canceled selection
+            fileLabel.setText("File selection canceled");
+        } else if(returnValue == JFileChooser.ERROR_OPTION){ //An error occured
+            fileLabel.setText("An error occured: I'M as confused as you are");
+        }
+    }
+    
+    /**
+     * Scans data from conway file and sets cell array state to the data if valid, updates if invalid
+     * @param loadFile the conway file to get data from
+     * @return boolean of success for loading the data to game state
+     */
+    private boolean scanFile(File loadFile){
+        try {
+            int lineNum=0; //keep track of how many lines have been taken from the file, should equal lines of cells!
+            int colNum=0; //keep track of what column we are on
+            Scanner fileScanner = new Scanner(loadFile); //create a scanner to get data from file
+            Scanner lineScanner; //A scanner to scan along each line
+            
+            while(fileScanner.hasNext()){ //Continue
+                if(lineNum > Constant.NUM_CELLS_Y){//Too many lines, this format is incorrect, do no useless checks
+                    fileLabel.setText("ERROR: File is of incorrect dimensions");
+                    //Clear all cells and stop timer
+                    Cell.clearCellArray();
+                    Cell.clearStateArray();
+                    GamePanel.tick();
+                    return false; //exit the method
+                }
+                //Get the next token and ensure it is of correct size
+                String currentLine = fileScanner.next();
+                if (currentLine.length() != Constant.NUM_CELLS_X){ //Incorrect file format
+                    fileLabel.setText("ERROR: File is of incorrect dimensions");
+                    //Clear all cells and stop timer
+                    Cell.clearCellArray();
+                    Cell.clearStateArray();
+                    GamePanel.tick();
+                    return false; //exit the method
+                }
+                lineScanner = new Scanner(currentLine);
+                lineScanner.useDelimiter(""); //get only a single character at a time
+                while(lineScanner.hasNext()){
+                    String nextData = lineScanner.next();
+                    if(nextData.equals("1")){ //sets state to true
+                        Cell.cellArray[lineNum][colNum].setState(true); 
+                    } else if(nextData.equals("0")){ //sets state to false
+                        Cell.cellArray[lineNum][colNum].setState(false);
+                    } else { //nextData is not of expected format
+                        fileLabel.setText("ERROR: File is corrupt");
+                        System.out.println(lineNum+", "+colNum+": "+nextData);
+                        //Clear all cells and stop timer
+                        Cell.clearCellArray();
+                        Cell.clearStateArray();
+                        GamePanel.tick();
+                        return false; //exit the method
+                    }
+                    colNum+=1; //increment the column number to set next cell
+                }
+                lineScanner.close(); //close scanner gracefully
+                //Set entire line successfully, move onto next line
+                lineNum += 1; //increment line number to set next line
+                colNum = 0; //reset column number to start at start
+            }
+            if(lineNum!=Constant.NUM_CELLS_Y){ //format is not correct, not enough lines given
+                fileLabel.setText("ERROR: File is of incorrect dimensions");
+                //Clear all cells and stop timer
+                Cell.clearCellArray();
+                Cell.clearStateArray();
+                GamePanel.tick();
+                return false; //exit the method
+            }
+            fileScanner.close(); //gracefully close the scanner
+            //All has gone well
+            fileLabel.setText("Loaded File: " + loadFile.getName());
+            return true;
+        } catch(java.io.FileNotFoundException e){
+            //This should never be reached, but if it does...
+            fileLabel.setText("ERROR: File does not exist!");
+            System.err.println(e);
+            return false;
+        }
+        
     }
     
 }

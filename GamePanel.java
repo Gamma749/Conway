@@ -11,9 +11,8 @@ import javax.swing.*;
 import Conway.Constant;
 
 public class GamePanel extends JPanel{
-    private static final long serialVersionUID = 1L;
     //Create data fields for the class, so these objects are available in all methods
-    private JPanel cellPanel;
+    public static JPanel cellPanel;
     private JPanel controlPanel;
     private static javax.swing.Timer timer; //A timer to tick the game and cells
     private static boolean tickFlag=false;

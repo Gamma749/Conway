@@ -11,9 +11,6 @@ import javax.swing.*;
 import Conway.Constant;
 
 public class CellPanel extends JPanel{
-    //Add UID
-    private static final long serialVersionUID = 2L;    
-    
     /**
      * Add the cells to the panel
      * 
