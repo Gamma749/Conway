@@ -60,10 +60,16 @@ public class MainControlTab extends JPanel{
                         button.setText("Start");
                     }
                 }
-                Conway.GamePanel.tick();
+                GamePanel.tick();
             } else if(buttonPressed.getText() == "Clear"){ //Clear the cell array and state array, pulse the timer to clear
                 Cell.clearCellArray();
                 Cell.clearStateArray();
+                for(JButton button:buttonArray){ //Find the start/stop button and set it to start, as timer has stopped
+                    if(button.getText() == "Stop"){
+                        button.setForeground(new Color(0,200,0));
+                        button.setText("Start");
+                    }
+                }
                 GamePanel.tick();
             }
             repaint();

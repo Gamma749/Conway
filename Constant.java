@@ -5,6 +5,8 @@ package Conway;
  * Aug 2019
  */
 
+import java.awt.*;
+
 public final class Constant{
     /**
      * Restrict instantiation
@@ -31,4 +33,7 @@ public final class Constant{
     
     //Define the folder that all saves and loads will be stored/loaded
     public static final String SAVE_DIRECTORY = "Conway/Saves";
+    
+    //Hold the color of Cells and set to black
+    public static Color CELL_COLOR = new Color(255,0,255);
 }

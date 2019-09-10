@@ -12,7 +12,7 @@ import Conway.Constant;
 
 public class GamePanel extends JPanel{
     //Create data fields for the class, so these objects are available in all methods
-    public static JPanel cellPanel;
+    private static JPanel cellPanel;
     private JPanel controlPanel;
     private static javax.swing.Timer timer; //A timer to tick the game and cells
     private static boolean tickFlag=false;
@@ -68,5 +68,12 @@ public class GamePanel extends JPanel{
     public static void tick(){
         tickFlag = true;
         timer.restart();
+    }
+    
+    /**
+     * Rerender the cell panel so cells are updated
+     */
+    public static void repaintCells(){
+        cellPanel.repaint();
     }
 }

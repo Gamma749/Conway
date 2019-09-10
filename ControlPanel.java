@@ -27,9 +27,11 @@ public class ControlPanel extends JPanel{
         //Create the panes from objects
         JPanel mainControlTab = new MainControlTab(timer);
         JPanel fileControlTab = new FileControlTab();
+        JPanel colorControlTab = new ColorControlTab();
         
         tabPane.addTab("Main",mainControlTab); //The main panel, for timer and clear buttons
         tabPane.addTab("File", fileControlTab); //The file panel, for save/load functionality
+        tabPane.addTab("Color", colorControlTab); //The color panel, for customising the color of the cells
         tabPane.setBackground(new Color(200,200,235));
         this.add(tabPane); //add the tabPane to the controlPanel so it may be used
     }

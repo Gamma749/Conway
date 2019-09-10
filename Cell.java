@@ -116,7 +116,7 @@ public class Cell{
      */
     public void display(Graphics g){
         if(state){ //Draw a counter in the cell if that cell is filled
-            g.setColor(Color.black);
+            g.setColor(Constant.CELL_COLOR);
             //Counter
 //            g.fillOval((int)(xCoord+(size*0.15)), (int)(yCoord+(size*0.15)), (int)(size*0.7), (int)(size*0.7));
             //Fill square

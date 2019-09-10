@@ -44,7 +44,7 @@ public class FileControlTab extends JPanel{
     
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        GamePanel.cellPanel.repaint();
+        GamePanel.repaintCells();
     }
     
     private class ButtonListener implements ActionListener{
@@ -139,20 +139,14 @@ public class FileControlTab extends JPanel{
             while(fileScanner.hasNext()){ //Continue
                 if(lineNum > Constant.NUM_CELLS_Y){//Too many lines, this format is incorrect, do no useless checks
                     fileLabel.setText("ERROR: File is of incorrect dimensions");
-                    //Clear all cells and stop timer
-                    Cell.clearCellArray();
-                    Cell.clearStateArray();
-                    GamePanel.tick();
+                    resetAllOnError();
                     return false; //exit the method
                 }
                 //Get the next token and ensure it is of correct size
                 String currentLine = fileScanner.next();
                 if (currentLine.length() != Constant.NUM_CELLS_X){ //Incorrect file format
                     fileLabel.setText("ERROR: File is of incorrect dimensions");
-                    //Clear all cells and stop timer
-                    Cell.clearCellArray();
-                    Cell.clearStateArray();
-                    GamePanel.tick();
+                    resetAllOnError();
                     return false; //exit the method
                 }
                 lineScanner = new Scanner(currentLine);
@@ -166,10 +160,7 @@ public class FileControlTab extends JPanel{
                     } else { //nextData is not of expected format
                         fileLabel.setText("ERROR: File is corrupt");
                         System.out.println(lineNum+", "+colNum+": "+nextData);
-                        //Clear all cells and stop timer
-                        Cell.clearCellArray();
-                        Cell.clearStateArray();
-                        GamePanel.tick();
+                        resetAllOnError();
                         return false; //exit the method
                     }
                     colNum+=1; //increment the column number to set next cell
@@ -181,10 +172,7 @@ public class FileControlTab extends JPanel{
             }
             if(lineNum!=Constant.NUM_CELLS_Y){ //format is not correct, not enough lines given
                 fileLabel.setText("ERROR: File is of incorrect dimensions");
-                //Clear all cells and stop timer
-                Cell.clearCellArray();
-                Cell.clearStateArray();
-                GamePanel.tick();
+                resetAllOnError();
                 return false; //exit the method
             }
             fileScanner.close(); //gracefully close the scanner
@@ -198,6 +186,16 @@ public class FileControlTab extends JPanel{
             return false;
         }
         
+    }
+    
+    /**
+     * Reset all cells on an error with loading files
+     */
+    private void resetAllOnError(){
+        //Clear all cells and stop timer
+        Cell.clearCellArray();
+        Cell.clearStateArray();
+        GamePanel.tick();
     }
     
 }
