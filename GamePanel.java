@@ -22,25 +22,13 @@ public class GamePanel extends JPanel{
      */
     public GamePanel(){
         //Set the size and background of the game panel
-        setPreferredSize(new Dimension(Math.max(Constant.CELL_PANEL_WIDTH, Constant.CONTROL_PANEL_WIDTH), Constant.CELL_PANEL_HEIGHT+Constant.CONTROL_PANEL_HEIGHT));
+        setPreferredSize(new Dimension(Math.max(Constant.CELL_PANEL_WIDTH, Constant.CONTROL_PANEL_WIDTH), Constant.CELL_PANEL_HEIGHT+Constant.CONTROL_PANEL_HEIGHT+Constant.CONTROL_PANEL_TAB_CORRECTION));
         setBackground(new Color(180,180,200));
         
         //Define the timer
          timer = new javax.swing.Timer(Constant.TICK_SPEED, new ActionListener(){
             public void actionPerformed(ActionEvent event){
-                //iterate through each cell, check neighbours and tick cell
-                for(int x=0; x<Constant.NUM_CELLS_X; x++){ //Iterate through all the possible cells in the x direction
-                    for(int y=0;y<Constant.NUM_CELLS_Y; y++){ //Iterate through all possible cells in the y direction
-                        Cell.cellArray[x][y].tickCell();
-                    }
-                }
-                
-                //After ticking all cells, update each state according to the nextStateArray
-                for(int x=0; x<Constant.NUM_CELLS_X; x++){ //iterate through each row
-                    for(int y=0; y<Constant.NUM_CELLS_Y; y++){ //iterate through each column
-                        Cell.cellArray[x][y].setState(Cell.nextStateArray[x][y]);
-                    }
-                }
+                Cell.nextGeneration();
                 if(tickFlag){//indicates timer was only supposed to pulse
                     timer.stop();
                     tickFlag=false;

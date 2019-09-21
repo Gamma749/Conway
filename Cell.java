@@ -34,6 +34,23 @@ public class Cell{
     }
     
     /**
+     * Get the cell from a specified x and y index
+     * @param xIndex the x index of the cell in the cellArray
+     * @param yIndex the y index of the cell in the cellArray
+     * @return the cell at these indices
+     */
+    public static Cell getCell(int xIndex, int yIndex){
+        try{
+            return cellArray[xIndex][yIndex]; //Call the nonstatic toggle state on this cell
+        } catch(ArrayIndexOutOfBoundsException e){
+            //Cell requested is out of bounds, cannot continue without returning cell
+            //Return cell (0,0) and print error
+            System.err.println(e);
+            return cellArray[0][0];
+        }
+    }
+    
+    /**
      * Gets the x position of this cell in array
      * @return the x coordinate of the cell
      */
@@ -86,6 +103,19 @@ public class Cell{
      */
     public void toggleState(){
         this.state = !state;
+    }
+    
+    /**
+     * Override the togglestate method to toggle a particular cell in the cellArray, continue if our of range
+     * @param xIndex the x index of the cell in the cell array
+     * @param yIndex the y index of the cell in the cell array
+     */
+    public static void toggleState(int xIndex, int yIndex){
+        try{
+            cellArray[xIndex][yIndex].toggleState(); //Call the nonstatic toggle state on this cell
+        } catch(ArrayIndexOutOfBoundsException e){
+            //Continue, do nothing if out of range somehow
+        }
     }
     
     /**
@@ -166,7 +196,6 @@ public class Cell{
     
     /**
      * Changes cell over time in accourdance to its neighbour count
-     * @param neighbourCount the number of neighbours this cell has
      */
     public void tickCell(){
         int neighbourCount = neighbourCount();
@@ -187,6 +216,25 @@ public class Cell{
             nextStateArray[getXIndex()][getYIndex()] = false;
         }
 //        System.out.println(getXIndex()+ " "+ nextStateArray[getXIndex()][getYIndex()]);
+    }
+    
+    /**
+     * Iterate through all cells and update nextState and then cell array
+     */
+    public static void nextGeneration(){
+        //iterate through each cell, check neighbours and tick cell
+        for(int x=0; x<Constant.NUM_CELLS_X; x++){ //Iterate through all the possible cells in the x direction
+            for(int y=0; y<Constant.NUM_CELLS_Y; y++){ //Iterate through all possible cells in the y direction
+                cellArray[x][y].tickCell();
+            }
+        }
+        
+        //After ticking all cells, update each state according to the nextStateArray
+        for(int x=0; x<Constant.NUM_CELLS_X; x++){ //iterate through each row
+            for(int y=0; y<Constant.NUM_CELLS_Y; y++){ //iterate through each column
+                cellArray[x][y].setState(nextStateArray[x][y]);
+            }
+        }   
     }
     
 }

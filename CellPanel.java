@@ -24,10 +24,11 @@ public class CellPanel extends JPanel{
         addMouseListener(new MouseListener(){
             public void mouseClicked(MouseEvent event) {
                 try{
-                    activateCell(Cell.cellArray[event.getX()/Constant.CELL_SIZE][event.getY()/Constant.CELL_SIZE]);
-                } catch (ArrayIndexOutOfBoundsException e){
-                    //Do nothing, event is simply outside array of cells
+                   Cell.toggleState(event.getX()/Constant.CELL_SIZE, event.getY()/Constant.CELL_SIZE);
+                } catch (ArithmeticException e){
+                    //Do nothing, user has clicked a zero which will simply be ignored
                 }
+                repaint();
             }                
             //Override remaining methods
             public void mouseExited(MouseEvent event) {}                
@@ -40,9 +41,16 @@ public class CellPanel extends JPanel{
             Cell currentCell = null; //keep track of what cell has last been dragged on, to avoid many activations of same cell
             public void mouseDragged(MouseEvent event){
                 try{//Ensure event occurs in cell array
-                    if(currentCell!=Cell.cellArray[event.getX()/Constant.CELL_SIZE][event.getY()/Constant.CELL_SIZE]){ //Check to see if cell was just activated
-                        currentCell=Cell.cellArray[event.getX()/Constant.CELL_SIZE][event.getY()/Constant.CELL_SIZE]; //Update the most recent cell
-                        activateCell(currentCell); //Activate the cell
+                    if(event.getX()/Constant.CELL_SIZE < 0 ||
+                       event.getX()/Constant.CELL_SIZE >= Constant.NUM_CELLS_X ||
+                       event.getY()/Constant.CELL_SIZE < 0 ||
+                       event.getY()/Constant.CELL_SIZE >= Constant.NUM_CELLS_Y){
+                        //User has selected something from outside the cell array, do nothing
+                        
+                    } else if(currentCell!=Cell.getCell(event.getX()/Constant.CELL_SIZE, event.getY()/Constant.CELL_SIZE)){ //Check to see if cell was just activated
+                        currentCell=Cell.getCell(event.getX()/Constant.CELL_SIZE, event.getY()/Constant.CELL_SIZE); //Update the most recent cell
+                        currentCell.toggleState(); //Activate the cell
+                        repaint();
                     }
                 } catch (ArrayIndexOutOfBoundsException e){
                     //Do nothing, event is simply outside array of cells
@@ -63,16 +71,6 @@ public class CellPanel extends JPanel{
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Cell.displayAll(g);
-    }
-    
-    /**
-     * Activate the cell by changing activation and repaint the panel
-     * @param event the mouse event that triggered on a cell
-     */
-    private void activateCell(Cell cell){
-        cell.toggleState();
-        //repaint the panel
-        repaint();
     }
     
 }

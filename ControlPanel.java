@@ -20,7 +20,7 @@ public class ControlPanel extends JPanel{
     
     public ControlPanel(javax.swing.Timer timer){
         //Set the dimensions of the panel
-        setPreferredSize(new Dimension(Constant.CONTROL_PANEL_WIDTH, Constant.CONTROL_PANEL_HEIGHT));
+        setPreferredSize(new Dimension(Constant.CONTROL_PANEL_WIDTH, Constant.CONTROL_PANEL_HEIGHT+Constant.CONTROL_PANEL_TAB_CORRECTION));
         //Set the background color
         setBackground(new Color(200,200,235));
         
