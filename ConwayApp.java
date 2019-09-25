@@ -8,7 +8,6 @@ package Conway;
 import javax.swing.*;
 
 public class ConwayApp{
-    
     public static void main(String[] args){
         JFrame frame = new JFrame("Conway");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -18,5 +17,4 @@ public class ConwayApp{
         frame.pack();
         frame.setVisible(true);
     }
-    
 }

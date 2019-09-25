@@ -13,7 +13,7 @@ import Conway.Constant;
 public class GamePanel extends JPanel{
     //Create data fields for the class, so these objects are available in all methods
     private static JPanel cellPanel;
-    private JPanel controlPanel;
+    private static JTabbedPane controlTabbedPanel;
     private static javax.swing.Timer timer; //A timer to tick the game and cells
     private static boolean tickFlag=false;
     
@@ -22,7 +22,8 @@ public class GamePanel extends JPanel{
      */
     public GamePanel(){
         //Set the size and background of the game panel
-        setPreferredSize(new Dimension(Math.max(Constant.CELL_PANEL_WIDTH, Constant.CONTROL_PANEL_WIDTH), Constant.CELL_PANEL_HEIGHT+Constant.CONTROL_PANEL_HEIGHT+Constant.CONTROL_PANEL_TAB_CORRECTION));
+        setPreferredSize(new Dimension(Math.max(Constant.CELL_PANEL_WIDTH, Constant.CONTROL_PANEL_WIDTH), 
+                                       Constant.CELL_PANEL_HEIGHT+Constant.CONTROL_PANEL_HEIGHT+Constant.CONTROL_PANEL_TAB_CORRECTION));
         setBackground(new Color(180,180,200));
         
         //Define the timer
@@ -37,12 +38,28 @@ public class GamePanel extends JPanel{
             }
         });
         
-        //Create and add the panels
+        //Create and add the cell panel
         cellPanel = new CellPanel();
-        controlPanel = new ControlPanel(timer);
-        //Add panels
         add(cellPanel);
-        add(controlPanel);
+        
+        //Create the Control Panel
+        controlTabbedPanel = new JTabbedPane();
+        //Set dimensions using Constant
+        controlTabbedPanel.setPreferredSize(new Dimension(Constant.CONTROL_PANEL_WIDTH, Constant.CONTROL_PANEL_HEIGHT));
+        //Set the background color
+        controlTabbedPanel.setBackground(new Color(200,200,235));
+        
+        //Create the panes from objects to add to control panel
+        JPanel mainControlTab = new MainControlTab(timer);
+        JPanel fileControlTab = new FileControlTab();
+        JPanel colorControlTab = new ColorControlTab();
+        
+        //Add panes to control panel
+        controlTabbedPanel.addTab("Main",mainControlTab); //The main panel, for timer and clear buttons
+        controlTabbedPanel.addTab("File", fileControlTab); //The file panel, for save/load functionality
+        controlTabbedPanel.addTab("Color", colorControlTab); //The color panel, for customising the color of the cells
+        
+        this.add(controlTabbedPanel); //add the tabPane to the GamePanel so it may be used
     }
     
     //Override

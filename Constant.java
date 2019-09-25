@@ -14,11 +14,11 @@ public final class Constant{
     private Constant(){}
     
     //Set the dimensions of the cell panel
-    public static final int CELL_PANEL_HEIGHT = 500;
-    public static final int CELL_PANEL_WIDTH = 500;
+    public static final int CELL_PANEL_HEIGHT = 400;
+    public static final int CELL_PANEL_WIDTH = 400;
     
     //Set the dimensions of the control panel
-    public static final int CONTROL_PANEL_TAB_CORRECTION = 50;
+    public static final int CONTROL_PANEL_TAB_CORRECTION = 15;
     public static final int CONTROL_PANEL_HEIGHT = 150;
     public static final int CONTROL_PANEL_WIDTH = CELL_PANEL_WIDTH;
     
@@ -35,6 +35,6 @@ public final class Constant{
     //Define the folder that all saves and loads will be stored/loaded
     public static final String SAVE_DIRECTORY = "Conway/Saves";
     
-    //Hold the color of Cells and set to black
-    public static Color CELL_COLOR = new Color(255,0,255);
+    //Hold the color of Cells
+    public static Color CELL_COLOR = new Color(0,0,0);
 }
