@@ -14,8 +14,8 @@ public final class Constant{
     private Constant(){}
     
     //Set the dimensions of the cell panel
-    public static final int CELL_PANEL_HEIGHT = 400;
-    public static final int CELL_PANEL_WIDTH = 400;
+    public static final int CELL_PANEL_HEIGHT = 500;
+    public static final int CELL_PANEL_WIDTH = 500;
     
     //Set the dimensions of the control panel
     public static final int CONTROL_PANEL_TAB_CORRECTION = 15;

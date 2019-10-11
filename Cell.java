@@ -7,13 +7,14 @@ package Conway;
 
 import java.awt.*;
 import Conway.Constant;
+import java.util.Random;
 
 public class Cell{
     //Declare the public static arrays to hold cells and states
     //Create a new 2 dimensional array for all the cells to be held in
-    public static Cell[][] cellArray = new Cell[Constant.NUM_CELLS_X][Constant.NUM_CELLS_Y];
+    private static Cell[][] cellArray = new Cell[Constant.NUM_CELLS_X][Constant.NUM_CELLS_Y];
     //hold the next state of each cell
-    public static Boolean[][] nextStateArray = new Boolean[Constant.NUM_CELLS_X][Constant.NUM_CELLS_Y];
+    private static Boolean[][] nextStateArray = new Boolean[Constant.NUM_CELLS_X][Constant.NUM_CELLS_Y];
     
     //Declare datafields
     private int xCoord, yCoord, xIndex, yIndex; //Coordinates of cell
@@ -48,6 +49,17 @@ public class Cell{
             System.err.println(e);
             return cellArray[0][0];
         }
+    }
+    
+    /**
+     * populate the cell array with cells
+     */
+    public static void initalise(){
+        for(int x=0; x<Constant.NUM_CELLS_X; x++){ //Iterate through all the possible cells in the x direction
+            for(int y=0;y<Constant.NUM_CELLS_Y; y++){ //Iterate through all possible cells in the y direction
+                Cell.cellArray[x][y] = new Cell(x*Constant.CELL_SIZE, y*Constant.CELL_SIZE);
+            }
+        }   
     }
     
     /**
@@ -119,6 +131,18 @@ public class Cell{
     }
     
     /**
+     * Randomise the cell array
+     */
+    public static void randomiseAll(){
+        Random random = new Random();
+        for (int x=0; x<Constant.NUM_CELLS_X; x++){//iterate through all the row cell arrays
+            for(int y=0; y<Constant.NUM_CELLS_Y; y++){//iterate through all the cells in the row cell arrays
+                cellArray[x][y].setState(random.nextBoolean());
+            }
+        }
+    }
+    
+    /**
      * Clear the cell array by setting all cell states to false
      */
     public static void clearCellArray(){
@@ -174,30 +198,46 @@ public class Cell{
      * @param cell the cell to check
      * @return the number of neighbours the cell has
      */
-    public int neighbourCount(){
+    private int neighbourCount(){
         int neighbourCount = 0;
         //Cycle through every neighbour
-        for(int x=xIndex-1; x<=xIndex+1; x++){
-            for(int y=yIndex-1; y<=yIndex+1; y++){
-                if(x==xIndex && y==yIndex){//Do not search current cell
-                    continue;
-                }
-                try{
-                    if(Cell.cellArray[x][y].getState()){ //Check if the cell is active
+        for(int x=xIndex-1; x<=xIndex+1; x++){ //Check each neighbour in x direciton
+            for(int y=yIndex-1; y<=yIndex+1; y++){ //Check each neighbour in y direction
+//                System.out.println(x+", "+y);
+                if(x==xIndex && y==yIndex)continue;//Do not search current cell
+                else if(Cell.cellArray[mod(x, Constant.NUM_CELLS_X)][mod(y, Constant.NUM_CELLS_Y)].getState()){
+                    try{
                         neighbourCount++;
+                    } catch(ArrayIndexOutOfBoundsException e){
+                        System.err.println(e);
+                        System.err.println(x+", "+y);
                     }
-                } catch(ArrayIndexOutOfBoundsException e){ //We are checking a cell on the edge, let all edges be inactive
-                    //Continue on
                 }
             }
         }
         return neighbourCount;
     }
     
+    
+    /**
+     * Take a raw integer and return the integer shifted to be in the range given
+     * eg modFunc(-1,100) will return 99
+     * @param rawInt the unshifted integer
+     * @param modulus the value to shift to (between 0 (inclusive) and modulus (exclusive))
+     * @return the shifted integer
+     */
+    private int mod(int rawInt, int modulus){
+        int currentInt = rawInt%modulus; //shift the input int to be in the right range
+        if (currentInt<0){ //deal with negatives
+            currentInt += modulus; //shift to postive domain
+        }
+        return currentInt;
+    }
+    
     /**
      * Changes cell over time in accourdance to its neighbour count
      */
-    public void tickCell(){
+    private void tickCell(){
         int neighbourCount = neighbourCount();
         if(!getState() && neighbourCount == 3){
             //Cell can become active if exactly three neighbours surround it

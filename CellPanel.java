@@ -60,11 +60,7 @@ public class CellPanel extends JPanel{
         });
         
         //Add the cells
-        for(int x=0; x<Constant.NUM_CELLS_X; x++){ //Iterate through all the possible cells in the x direction
-            for(int y=0;y<Constant.NUM_CELLS_Y; y++){ //Iterate through all possible cells in the y direction
-                Cell.cellArray[x][y] = new Cell(x*Constant.CELL_SIZE, y*Constant.CELL_SIZE);
-            }
-        }
+        Cell.initalise();
     }
     
     //Override

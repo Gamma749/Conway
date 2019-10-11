@@ -11,7 +11,7 @@ import javax.swing.*;
 import Conway.Constant;
 
 public class MainControlTab extends JPanel{
-    private JButton[] buttonArray = {new JButton("Start"), new JButton("Tick"), new JButton("Clear")};
+    private JButton[] buttonArray = {new JButton("Start"), new JButton("Tick"), new JButton("Clear"), new JButton("Randomise")};
     private javax.swing.Timer timer;
     private JLabel timerLabel;
     
@@ -40,6 +40,7 @@ public class MainControlTab extends JPanel{
     
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        GamePanel.repaintCells();
     }
     
     private class ButtonListener implements ActionListener{
@@ -61,6 +62,15 @@ public class MainControlTab extends JPanel{
                     }
                 }
                 GamePanel.tick();
+            } else if(buttonPressed.getText() == "Randomise"){ //Randomise the cell array, stop the timer
+                Cell.randomiseAll();
+                timer.stop();
+                for(JButton button:buttonArray){ //Find the start/stop button and set it to start, as timer has stopped
+                    if(button.getText() == "Stop"){
+                        button.setForeground(new Color(0,200,0));
+                        button.setText("Start");
+                    }
+                }
             } else if(buttonPressed.getText() == "Clear"){ //Clear the cell array and state array, pulse the timer to clear
                 Cell.clearCellArray();
                 Cell.clearStateArray();

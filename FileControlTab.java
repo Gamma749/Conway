@@ -35,10 +35,11 @@ public class FileControlTab extends JPanel{
             button.addActionListener(buttonListener);
         }
         //Initalise the fileLabel, which will update the user about save/load success
-        fileLabel = new JTextArea(2,40);
+        fileLabel = new JTextArea();
         fileLabel.setEditable(false); //stop the user editing the field
         fileLabel.setBackground(new Color(220,220,255)); //set background
         fileLabel.setMargin(new Insets(10,10,10,10)); //Set the margins
+        fileLabel.setPreferredSize(new Dimension(Constant.CONTROL_PANEL_WIDTH-20, Constant.CONTROL_PANEL_HEIGHT-70));
         this.add(fileLabel);
     }
     
@@ -74,7 +75,7 @@ public class FileControlTab extends JPanel{
             
             for(int x=0; x<Constant.NUM_CELLS_X; x++){ //Iterate through all the possible cells in the x direction
                 for(int y=0;y<Constant.NUM_CELLS_Y; y++){ //Iterate through all possible cells in the y direction
-                    writer.write((Cell.cellArray[x][y].getState()?'1':'0')); //write a 1 if the cell is filled, 0 otherwise
+                    writer.write((Cell.getCell(x,y).getState()?'1':'0')); //write a 1 if the cell is filled, 0 otherwise
                 }
                 writer.write('\n'); //write a \n between lines
             }
@@ -154,9 +155,9 @@ public class FileControlTab extends JPanel{
                 while(lineScanner.hasNext()){
                     String nextData = lineScanner.next();
                     if(nextData.equals("1")){ //sets state to true
-                        Cell.cellArray[lineNum][colNum].setState(true); 
+                        Cell.getCell(lineNum, colNum).setState(true); 
                     } else if(nextData.equals("0")){ //sets state to false
-                        Cell.cellArray[lineNum][colNum].setState(false);
+                        Cell.getCell(lineNum, colNum).setState(false);
                     } else { //nextData is not of expected format
                         fileLabel.setText("ERROR: File is corrupt");
                         System.out.println(lineNum+", "+colNum+": "+nextData);
